@@ -1,18 +1,24 @@
 ###
 Module dependencies.
 ###
+
+port = process.env.PORT || 3000
+
+require 'coffee-script'
 express = require('express')
 routes = require('./routes')
 user = require('./routes/user')
 http = require('http')
 path = require('path')
 
+requirejs = require 'requirejs'
+requirejs.config { nodeRequire: require }
 ImgDiff = require('./libraries/ImgDiff')
 
 app = express();
 
 app.configure(() ->
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', port);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -22,6 +28,7 @@ app.configure(() ->
   app.use(app.router);
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use('/classes', express.static(path.join(__dirname, 'classes')));
 )
 
 app.configure('development', () ->
@@ -33,6 +40,19 @@ app.get('/users', user.list);
 app.get('/hdistances',ImgDiff.hausdorff_distances)
 app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
-http.createServer(app).listen(app.get('port'), () ->
+server = http.createServer(app)
+io = require('socket.io').listen(server)
+io.set('log level', 1)
+
+server.listen(app.get('port'), () ->
   console.log("Express server listening on port " + app.get('port'))
 )
+
+console.log "Initializing database connection"
+requirejs ['./classes/Database'], (database) ->
+  database.onReady () ->
+    console.log "Ready"
+    console.log "Starting up real time server"
+
+    requirejs ['./classes/Server'], (Server) ->
+      s = new Server(io)
