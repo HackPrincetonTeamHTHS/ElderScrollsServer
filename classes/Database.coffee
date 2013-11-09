@@ -1,6 +1,11 @@
+if process.env.MONGO_URL?
+  url = process.env.MONGO_URL
+else
+  url = 'mongodb://localhost/elderscrolls'
+
 define (require, exports, module) ->
   mongoose = require('mongoose')
-  mongoose.connect('mongodb://localhost/elderscrolls')
+  mongoose.connect(url)
   db = mongoose.connection
 
   roomSettingsSchema = new mongoose.Schema({

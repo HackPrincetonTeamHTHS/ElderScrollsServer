@@ -18,5 +18,9 @@
     "socket.io-client": "~0.9.16",
     "png.js": "0.1.1",
     "pngjs": "~0.4.0"
+  },
+  "subdomain": "HackPrincetonTeamHTHS",
+  "engines": {
+    "node": "0.10.x"
   }
 }
