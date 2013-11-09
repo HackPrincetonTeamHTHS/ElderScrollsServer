@@ -1,15 +1,42 @@
 define (require, exports, module) ->
-  database = require './Database'
   SyncedClass = require './SyncedClass'
+  _ = require 'underscore'
 
   class Room extends SyncedClass
-    constructor: (@id) ->
-      @refresh()
+    constructor: (socket, settings) ->
+      super 'Room', socket
 
-    refresh: () ->
-      database.RoomSettingsModel.find {id: @id}, (err, data) ->
-        if err
-          console.log err
-        console.log data
+      @running = false
+      @users = []
+
+      @loadSettings settings
+
+      @run()
+
+    loadSettings: (settings) ->
+      for key, val in settings
+        @set key, val
+
+    run: () ->
+      @set 'running', true
+      runTime = @get 'runTime'
+      setTimeout @finish, runTime
+
+    finish: () ->
+      @set 'running', false
+      finishTime = @get 'finishTime'
+      setTimeout @run, finishTime
+
+    getSocketRoomName: () ->
+      return 'room' + @id
+
+    addUser: (user) ->
+      @users.push(user)
+      user.getSocket().join @getSocketRoomName()
+
+    removeUser: (user) ->
+      @users = _.filter @users, (elem) ->
+        return user['id'] == elem['id']
+      user.getSocket.leave @getSocketRoomName()
 
   module.exports = Room

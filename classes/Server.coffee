@@ -1,11 +1,12 @@
 define (require, exports, module) ->
   Room = require './Room'
   User = require './User'
+  _ = require 'underscore'
 
   class Server
     constructor: (@io) ->
       @rooms = {}
-      @currentUsers = {}
+      @currentUsers = []
       @currentUserId = 0
 
       @io.on 'connection', (socket) =>
@@ -13,6 +14,8 @@ define (require, exports, module) ->
 
     addRoom: () ->
       newRoom = new Room
+      newRoom.onUpdate 'running', (val) ->
+        console.log val
       @rooms.push newRoom
       return newRoom
 
@@ -25,20 +28,25 @@ define (require, exports, module) ->
       socket.emit 'newUser', {id: newId}
 
     addUser: (socket, user) ->
-      newUser = new User(socket)
-      @currentUsers[user['id']] = newUser
+      @currentUsers[user['id']] = user
+
       socket.on 'changeRoom', (data) =>
-        @onUserChangeRoom newUser, data['fromId'], data['toId']
+        @onUserChangeRoom user, data['fromId'], data['toId']
+
       socket.on 'disconnect', () =>
         console.log "User #", user['id'], "disconnected"
-        @removeUser user['id']
+        @removeUser user
 
-    removeUser: (id) ->
-      if @currentUsers[id]?
-        delete @currentUsers[id]
+    removeUser: (user) ->
+      @currentUsers = _.reject @currentUsers, (el) ->
+        return el.id == user.id
 
-    onUserChangeRoom: (id, fromId, toId) ->
-      @rooms[fromId].removeUser(id)
-      @rooms[toId].addUser(id)
+    getRoomById: (id) ->
+      return _.find @rooms, (room) ->
+        room['id'] == id
+
+    onUserChangeRoom: (user, fromId, toId) ->
+      @getRoomById(fromId).removeUser(user)
+      @getRoomById(toId).addUser(user)
 
   module.exports = Server

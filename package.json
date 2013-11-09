@@ -13,6 +13,8 @@
     "mongoose": "~3.8.0",
     "async": "~0.2.9",
     "coffee-script": "~1.6.3",
-    "requirejs": "~2.1.9"
+    "requirejs": "~2.1.9",
+    "underscore": "~1.5.2",
+    "socket.io-client": "~0.9.16"
   }
 }

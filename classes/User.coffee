@@ -7,6 +7,9 @@ define (require, exports, module) ->
       @set 'currentRoom', -1, false
 
     changeRoom: (id) ->
-      @socket.emit 'changeRoom', {fromId: @get 'currentRoom', toId: id}
+       @set 'currentRoom', id
+
+    getSocket: () ->
+      return @socket
 
   module.exports = User
