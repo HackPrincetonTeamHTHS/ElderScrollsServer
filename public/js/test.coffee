@@ -1,4 +1,4 @@
-require ['../classes/Client'], (Client) ->
+require ['/classes/Client'], (Client) ->
   c = new Client
 
   $("#test").click (e) ->
