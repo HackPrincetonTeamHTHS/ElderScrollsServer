@@ -29,8 +29,6 @@ app.configure('development', () ->
   app.use(express.errorHandler());
 )
 
-app.get('/', routes.index);
-app.get('/users', user.list);
 app.get('/hdistances',ImgDiff.hausdorff_distances)
 app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
