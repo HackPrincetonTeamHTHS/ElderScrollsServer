@@ -7,6 +7,8 @@ user = require('./routes/user')
 http = require('http')
 path = require('path')
 
+ImgDiff = require('./libraries/ImgDiff')
+
 app = express();
 
 app.configure(() ->
@@ -28,6 +30,7 @@ app.configure('development', () ->
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/distances',ImgDiff.distances)
 
 http.createServer(app).listen(app.get('port'), () ->
   console.log("Express server listening on port " + app.get('port'))
