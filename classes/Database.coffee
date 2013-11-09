@@ -12,13 +12,14 @@ define (require, exports, module) ->
     id: Number,
     name: String,
     difficulty: Number,
-    maxUsers: Number,
-    password: String,
-    roundTime: Number,
-    highScores: [{
-      id: Number,
-      score: Number
-    }]
+#    maxUsers: Number,
+#    password: String,
+    runTime: Number,
+    finishTime: Number,
+#    highScores: [{
+#      id: Number,
+#      score: Number
+#    }]
   })
 
   exports.RoomSettingsModel = mongoose.model 'RoomSettings', roomSettingsSchema

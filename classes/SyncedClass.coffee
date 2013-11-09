@@ -5,11 +5,11 @@ define (require, exports, module) ->
       @callbacks = {}
       @socket.on 'sync', (data) =>
         if data['objectId'] == @objectId
-          console.log 'Receiving sync', data['key'], '=', data['value']
+          console.log @objectId, 'receiving sync', data['key'], '=', data['value']
           @set data['key'], data['value'], false
 
     set: (key, value, sync = true) ->
-      console.log "Setting", key, "=>", value
+#      console.log "Setting", key, "=>", value
       @data[key] = value
       if @callbacks[key]?
         for callback in @callbacks[key]
@@ -18,7 +18,8 @@ define (require, exports, module) ->
         for callback in @callbacks['*']
           callback value
       if sync
-        console.log 'Sending sync', key, '=', value
+        if key != 'running'
+          console.log @objectId, 'sending sync', key, '=', value
         data =
           objectId: @objectId
           key: key

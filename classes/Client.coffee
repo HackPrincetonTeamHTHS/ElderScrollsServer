@@ -5,16 +5,17 @@ define (require, exports, module) ->
   class Client
     constructor: () ->
       @callbacks = []
+      @updateCallbacks = {}
       @socket = io.connect()
-     @socket.on 'newUser', (data) =>
+
+      @socket.on 'newUser', (data) =>
         @me = new User(@socket, data['id'], 'Name')
         for callback in @callbacks
           callback()
+
       @socket.on 'newRoom', (data) =>
-        if data['settings']['id'] == -1
-          @room = null
-        else
-          @room = new Room(@socket, data['settings'])
+        @room = new Room @socket, data['settings']
+        @rebindUpdateCallbacks()
 
       @onReady () =>
         @setup()
@@ -25,6 +26,15 @@ define (require, exports, module) ->
     setup: () ->
       console.log 'Connected'
       console.log @me
-      @me.changeRoom(3)
+
+    onUpdate: (key, callback) ->
+      if !@updateCallbacks[key]?
+        @updateCallbacks[key] = []
+      @updateCallbacks[key].push callback
+
+    rebindUpdateCallbacks: () ->
+      for key, callbacks of @updateCallbacks
+        for callback in callbacks
+          @room.onUpdate key, callback
 
   module.exports = Client
