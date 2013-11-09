@@ -9,7 +9,7 @@ define (require, exports, module) ->
 
     changeRoom: (id) ->
       console.log "Changing room from", @get('currentRoom'), "to", id
-      @previousRoom = @get('currentRoom')
+     @previousRoom = @get('currentRoom')
       @set 'currentRoom', id
 
     getSocket: () ->

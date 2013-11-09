@@ -6,7 +6,7 @@ define (require, exports, module) ->
     constructor: () ->
       @callbacks = []
       @socket = io.connect()
-      @socket.on 'newUser', (data) =>
+     @socket.on 'newUser', (data) =>
         @me = new User(@socket, data['id'], 'Name')
         for callback in @callbacks
           callback()
