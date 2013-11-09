@@ -1,11 +1,185 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<head>
+    <title></title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/js/jquery.knob.js"></script>
+    <script src="/js/easeljs-0.7.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    <script type="text/javascript">
+        var canvas, stage;
+        var drawingCanvas;
+        var oldPt;
+        var oldMidPt;
+        var title;
+        var color;
+        var stroke;
+        var colors;
+        var index;
+        var size=6;
+        var col='#000000';
+        function init() {
+            canvas = document.getElementById("the-canvas");
+            stage = new createjs.Stage(canvas);
+            stage.autoClear = false;
+            createjs.Touch.enable(stage);
+            createjs.Ticker.setFPS(24);
+
+            drawingCanvas = new createjs.Shape();
+
+            stage.addEventListener("stagemousedown", handleMouseDown);
+            stage.addEventListener("stagemouseup", handleMouseUp);
+
+            stage.addChild(drawingCanvas);
+        }
+        function stop() {}
+
+        function handleMouseDown(event) {
+            color = col;
+            stroke = size;
+            oldPt = new createjs.Point(stage.mouseX, stage.mouseY);
+            oldMidPt = oldPt;
+            stage.addEventListener("stagemousemove" , handleMouseMove);
+        }
+        function handleMouseMove(event) {
+            var midPt = new createjs.Point(oldPt.x + stage.mouseX>>1, oldPt.y+stage.mouseY>>1);
+
+            drawingCanvas.graphics.clear().setStrokeStyle(stroke, 'round', 'round').beginStroke(color).moveTo(midPt.x, midPt.y).curveTo(oldPt.x, oldPt.y, oldMidPt.x, oldMidPt.y);
+
+            oldPt.x = stage.mouseX;
+            oldPt.y = stage.mouseY;
+
+            oldMidPt.x = midPt.x;
+            oldMidPt.y = midPt.y;
+
+            stage.update();
+        }
+
+        function handleMouseUp(event) {
+            stage.removeEventListener("stagemousemove" , handleMouseMove);
+        }
+
+    </script>
+</head>
+<body onLoad="sizeCanvas(), init()" onResize="limitedSizeCanvas()">
+<div id="play-content-wrapper">
+    <div id="stat-pane" class="pane">
+        <div id="timer">
+            <input type="text" value="5" class="time">
+        </div>
+        <div id="leaderboard-wrapper">
+            <div class="player"><div class="name">Austin Eng</div><div class="score">35239452</div></div>
+            <div class="player"><div class="name">Andrew Millman</div><div class="score">12352</div></div>
+            <div class="player"><div class="name">Vincent Chen</div><div class="score">-239452</div></div>
+        </div>
+<button id="analyze" class="btn btn-primary">Analyze</button>
+<span id="results"></span>
+    </div>
+    <div id="canvas-pane" class="pane">
+        <div id="canvas-wrapper">
+            <div id="canvas-content">
+                <canvas id="the-canvas" width="500px" height="500px">
+                    <div id="grid"></div>
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bottom-bar" id="play-bottom-bar">
+    <div class="button down" id="edit-btn"><img class="icon" src="/img/ic_action_edit.png" /></div>
+    <div class="button" id="delete-btn"><img class="icon" src="/img/ic_action_discard.png" /></div>
+    <!--<div class="button"><img class="icon" src="img/ic_action_undo.png" /></div>-->
+    <div class="button pull-right"><a href="../"><img class="icon" src="/img/ic_action_cancel.png" /></a></div>
+</div>
+<script>
+    $("#analyze").on('click',function() {
+        var img = document.getElementById("the-canvas").toDataURL("image/png")//.replace("image/png", "image/octet-stream");
+        console.log(img);
+        $.ajax({
+            url: "/tcoeff",
+            data: {"img":img},
+            type: "post",
+            success: function(d){
+                $("#results").text(d);
+            }
+
+        })
+    })
+    function sizeCanvas() {
+        var container = $('#canvas-pane');
+        var containerRatio = container.width()/container.height();
+        var canvasWrapper = $('#canvas-wrapper');
+        if (containerRatio <= 1) {
+            canvasWrapper.css('width','100%').css('height','').css('top',(container.height()-canvasWrapper.height())/2);
+
+        }
+        if (containerRatio > 1) {
+            canvasWrapper.css('height','100%').css('width',canvasWrapper.height()).css('top','');
+
+        }
+
+        var canvas = $('#the-canvas');
+        canvas.css('transform','scale('+$('#canvas-content').width()/canvas.width()+')');
+
+    }
+    var canBeCalled = true;
+    function limitedSizeCanvas(){
+        if(!canBeCalled) return;
+        sizeCanvas();
+        canBeCalled = false;
+        setTimeout(function(){
+            canBeCalled = true;
+        }, 80);
+    }
+
+    $(function() {
+        var startVal = parseFloat($('.time').attr('value'));
+        $(".time").knob({
+            width: 100,
+            height: 100,
+            'min':0,
+            'max': startVal,
+            readOnly: true,
+            step: 0.01,
+            fgColor: 'hsl(120, 100%, 80%)',
+            inputColor: 'hsl(120, 100%, 80%)',
+            font: 'Roboto'
+        });
+    });
+    var countdown = setInterval(function(){
+        var dial = $('.time');
+        var newtime = parseFloat(dial.val())-0.01;
+        var hue = newtime/parseFloat(dial.attr('value'))*120;
+        dial.val(newtime).trigger('change').trigger('configure', {
+            fgColor: 'hsl('+hue+', 100%, 80%)',
+            inputColor: 'hsl('+hue+', 100%, 80%)',
+        });
+        if (hue < 0) {
+            clearInterval(countdown);
+            timesUp();
+        }
+    }, 10);
+    function timesUp() {
+        console.log('Done!');
+    }
+    $('.button').click(function(){
+        if (!($(this).hasClass('down'))) {
+            $('.button').removeClass('down');
+            $(this).addClass('down');
+        }
+    });
+    $('#edit-btn').click(function(){
+        size=6;
+        col='#000000';
+    });
+    $('#delete-btn').click(function(){
+        size=20;
+        col='#ffffff';
+    });
+</script>
+</body>
 </html>

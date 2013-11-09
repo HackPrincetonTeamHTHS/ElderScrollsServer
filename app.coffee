@@ -31,7 +31,7 @@ app.configure('development', () ->
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/hdistances',ImgDiff.hausdorff_distances)
-app.get('/tcoeff',ImgDiff.tanimoto_coefficient)
+app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
 http.createServer(app).listen(app.get('port'), () ->
   console.log("Express server listening on port " + app.get('port'))
