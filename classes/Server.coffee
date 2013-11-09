@@ -1,23 +1,27 @@
 define (require, exports, module) ->
-  Room = require './Room'
+  ServerRoom = require './ServerRoom'
   User = require './User'
   _ = require 'underscore'
 
   class Server
     constructor: (@io) ->
-      @rooms = {}
+      @rooms = []
       @currentUsers = []
       @currentUserId = 0
 
+      @addRoom 3
+
       @io.on 'connection', (socket) =>
+        socket.on 'broadcast', (data) ->
+          socket.broadcast.to(data['room']).emit(data['event'], data['data'])
         @prepareUser socket
 
-    addRoom: () ->
-      newRoom = new Room
-      newRoom.onUpdate 'running', (val) ->
-        console.log val
-      @rooms.push newRoom
-      return newRoom
+    addRoom: (id) ->
+      newRoom = new ServerRoom {id: id, runTime: 1000, finishTime: 500}, () =>
+        newRoom.onUpdate 'running', (val) =>
+          console.log val
+        @rooms.push newRoom
+        console.log 'Added new room with id', id
 
     prepareUser: (socket) ->
       newId = @currentUserId
@@ -28,10 +32,16 @@ define (require, exports, module) ->
       socket.emit 'newUser', {id: newId}
 
     addUser: (socket, user) ->
-      @currentUsers[user['id']] = user
+      @currentUsers.push user
 
-      user.onUpdate 'currentRoom', (data) =>
-        @onUserChangeRoom user, data['fromId'], data['toId']
+      console.log "User #", user['id'], "connected"
+
+      user.onUpdate 'currentRoom', (toId) =>
+        @onUserChangeRoom user, user['previousRoom'], toId
+
+      user.onUpdate 'drawingData', (data) ->
+        # score the drawing data
+        user.set 'drawingScore', Math.random()
 
       socket.on 'disconnect', () =>
         console.log "User #", user['id'], "disconnected"
@@ -42,11 +52,13 @@ define (require, exports, module) ->
         return el.id == user.id
 
     getRoomById: (id) ->
+      if id == -1
+        return null
       return _.find @rooms, (room) ->
         room['id'] == id
 
     onUserChangeRoom: (user, fromId, toId) ->
-      @getRoomById(fromId).removeUser(user)
+#      @getRoomById(fromId).removeUser(user)
       @getRoomById(toId).addUser(user)
 
   module.exports = Server

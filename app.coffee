@@ -39,6 +39,8 @@ app.get('/users', user.list);
 
 server = http.createServer(app)
 io = require('socket.io').listen(server)
+io.set('log level', 1)
+
 server.listen(app.get('port'), () ->
   console.log("Express server listening on port " + app.get('port'))
 )

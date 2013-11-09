@@ -11,21 +11,11 @@ define (require, exports, module) ->
 
       @loadSettings settings
 
-      @run()
+      @room = @getSocketRoomName()
 
     loadSettings: (settings) ->
-      for key, val in settings
-        @set key, val
-
-    run: () ->
-      @set 'running', true
-      runTime = @get 'runTime'
-      setTimeout @finish, runTime
-
-    finish: () ->
-      @set 'running', false
-      finishTime = @get 'finishTime'
-      setTimeout @run, finishTime
+      @id = settings['id']
+      @set 'settings', settings
 
     getSocketRoomName: () ->
       return 'room' + @id
@@ -33,6 +23,7 @@ define (require, exports, module) ->
     addUser: (user) ->
       @users.push(user)
       user.getSocket().join @getSocketRoomName()
+      user.getSocket().emit 'newRoom', {settings: @get 'settings'}
 
     removeUser: (user) ->
       @users = _.filter @users, (elem) ->

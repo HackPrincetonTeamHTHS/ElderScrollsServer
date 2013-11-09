@@ -3,12 +3,13 @@ define (require, exports, module) ->
     constructor: (@objectId, @socket, @room = null) ->
       @data = {}
       @callbacks = {}
-      @sockets = []
-      @socket.on 'sync', (data) ->
+      @socket.on 'sync', (data) =>
         if data['objectId'] == @objectId
+          console.log 'Receiving sync', data['key'], '=', data['value']
           @set data['key'], data['value'], false
 
     set: (key, value, sync = true) ->
+      console.log "Setting", key, "=>", value
       @data[key] = value
       if @callbacks[key]?
         for callback in @callbacks[key]
@@ -17,12 +18,13 @@ define (require, exports, module) ->
         for callback in @callbacks['*']
           callback value
       if sync
+        console.log 'Sending sync', key, '=', value
         data =
           objectId: @objectId
           key: key
           value: value
         if @room?
-          @socket.broadcast.to(@room).emit 'sync', data
+          @socket.emit 'broadcast', {room: @room, event: 'sync', data: data}
         else
           @socket.emit 'sync', data
 
@@ -30,11 +32,9 @@ define (require, exports, module) ->
       return @data[key]
 
     onUpdate: (key, callback) ->
-      if !@callbacks[key]
+      if !@callbacks[key]?
         @callbacks[key] = []
 
       @callbacks[key].push(callback)
-
-
 
   module.exports = SyncedClass
