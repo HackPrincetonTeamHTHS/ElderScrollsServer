@@ -6,15 +6,16 @@ port = process.env.PORT || 3000
 
 require 'coffee-script'
 express = require('express')
-routes = require('./routes/')
+routes = require('./routes')
 user = require('./routes/user')
 http = require('http')
 path = require('path')
 
 requirejs = require 'requirejs'
 requirejs.config { nodeRequire: require }
+ImgDiff = require('./libraries/ImgDiff')
 
-app = express()
+app = express();
 
 app.configure(() ->
   app.set('port', port);
@@ -36,6 +37,8 @@ app.configure('development', () ->
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/hdistances',ImgDiff.hausdorff_distances)
+app.get('/tcoeff',ImgDiff.tanimoto_coefficient)
 
 server = http.createServer(app)
 io = require('socket.io').listen(server)
