@@ -30,7 +30,7 @@ define (require, exports, module) ->
     addUser: (socket, user) ->
       @currentUsers[user['id']] = user
 
-      socket.on 'changeRoom', (data) =>
+      user.onUpdate 'currentRoom', (data) =>
         @onUserChangeRoom user, data['fromId'], data['toId']
 
       socket.on 'disconnect', () =>

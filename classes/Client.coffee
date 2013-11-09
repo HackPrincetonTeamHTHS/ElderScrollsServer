@@ -9,5 +9,6 @@ define (require, exports, module) ->
 
     onReady: () ->
       alert 'Connected'
+      @me.changeRoom(3)
 
   module.exports = Client
