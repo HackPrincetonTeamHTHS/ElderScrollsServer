@@ -6,8 +6,6 @@ port = process.env.PORT || 3000
 
 require 'coffee-script'
 express = require('express')
-routes = require('./routes')
-user = require('./routes/user')
 http = require('http')
 path = require('path')
 
@@ -19,23 +17,18 @@ app = express();
 
 app.configure(() ->
   app.set('port', port);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'client')));
   app.use('/classes', express.static(path.join(__dirname, 'classes')));
+  app.use(express.static(path.join(__dirname, 'client')));
 )
 
 app.configure('development', () ->
   app.use(express.errorHandler());
 )
 
-app.get('/', routes.index);
-app.get('/users', user.list);
 app.get('/hdistances',ImgDiff.hausdorff_distances)
 app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
