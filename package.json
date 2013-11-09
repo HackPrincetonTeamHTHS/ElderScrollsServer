@@ -11,6 +11,7 @@
     "less-middleware": "*",
     "socket.io": "~0.9.16",
     "mongoose": "~3.8.0",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "png.js": "0.1.1"
   }
 }

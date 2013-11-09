@@ -20,8 +20,8 @@
         var stroke;
         var colors;
         var index;
-        var size=6;
-        var col='#000000';
+        var size=15;
+        var col='#00FF00';
         function init() {
             canvas = document.getElementById("the-canvas");
             stage = new createjs.Stage(canvas);
@@ -82,7 +82,7 @@
     <div id="canvas-pane" class="pane">
         <div id="canvas-wrapper">
             <div id="canvas-content">
-                <canvas id="the-canvas" width="500px" height="500px">
+                <canvas id="the-canvas" style="background-image:url('/img/out.png');background-color:#FFFFFF;" width="500px" height="500px">
                     <div id="grid"></div>
                 </canvas>
             </div>
