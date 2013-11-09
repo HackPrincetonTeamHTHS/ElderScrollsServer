@@ -9,10 +9,9 @@ exports.tanimoto_coefficient = (req, res) ->
   Pb = [] #set of all points in shape b
 
 
-  fs.readFile('./public/img/square5.png', (err, buffer) ->
+  fs.readFile('./public/img/out.png', (err, buffer) ->
     reader = new PNGReader(buffer);
     reader.parse( (err, png) ->
-      console.log(png)
       if (err)
         throw err
       for y in [0..png.getHeight()-1]
@@ -21,19 +20,19 @@ exports.tanimoto_coefficient = (req, res) ->
 
             Pa.push([x,y])
       PaCount = Pa.length
-      console.log PaCount
+      #console.log PaCount
 
       img = req.body.img.replace(/^data:image\/png;base64,/,"")
 
+      ###
       fs.writeFile("out.png",img, 'base64', (err) ->
         console.log(err);
       )
+      ###
       img = new Buffer(img, 'base64')#.toString('binary')
-      #console.log img
 
       reader = new PNGReader(img);
       reader.parse( (err, png) ->
-        console.log png
         if (err)
           throw err
         for y in [0..png.getHeight()-1]
@@ -41,15 +40,15 @@ exports.tanimoto_coefficient = (req, res) ->
             if png.getPixel(x,y)[0] == 0
               Pb.push([x,y])
         PbCount = Pb.length
-        console.log(PbCount)
+        #console.log(PbCount)
 
         intersection = 0
         for pntA in Pa
           for pntB in Pb
             if pntA[0] == pntB[0] && pntA[1] == pntB[1] #compare pixels 1:1
               intersection+=1
-        ratio = Math.pow(intersection/(PaCount+PbCount-intersection),1) #calculate Tanimoto coefficient
-        console.log(ratio)
+        ratio = Math.pow(intersection/(PaCount+PbCount-intersection),.5) #calculate Tanimoto coefficient
+        #console.log(ratio)
         res.send(parseFloat(ratio*100).toFixed(2)+"%");
       )
 
