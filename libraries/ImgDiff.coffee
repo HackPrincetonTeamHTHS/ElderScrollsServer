@@ -2,14 +2,10 @@ _ = require 'underscore'
 fs = require('fs')
 PNG = require('pngjs').PNG;
 
-width = 0 #global width of image
-height = 0 #global height of image
-Pa = [] #set of all points in shape a
-Pb = [] #set of all points in shape b
-Da = [] #set of all distances from shape a to shape b
-
 exports.tanimoto_coefficient = (req, res) ->
-  fs.createReadStream('./public/img/Square1.png')
+  Pa = [] #set of all points in shape a
+  Pb = [] #set of all points in shape b
+  fs.createReadStream('./public/img/Square3.png')
   .pipe(new PNG(
     filterType: 4
   ))
@@ -21,7 +17,7 @@ exports.tanimoto_coefficient = (req, res) ->
           Pa.push([x,y])
     PaCount = Pa.length
 
-    fs.createReadStream('./public/img/Square2.png').pipe(new PNG({filterType:4})).on('parsed', () ->
+    fs.createReadStream('./public/img/Square4.png').pipe(new PNG({filterType:4})).on('parsed', () ->
       for y in [0..this.height]
         for x in [0..this.width]
           idx = (this.width * y + x) << 2;
@@ -34,7 +30,7 @@ exports.tanimoto_coefficient = (req, res) ->
         for pntB in Pb
           if pntA[0] == pntB[0] && pntA[1] == pntB[1]
             intersection+=1
-      ratio = intersection/(PaCount+PbCount-intersection)
+      ratio = Math.pow(intersection/(PaCount+PbCount-intersection),1)
       console.log(ratio)
       res.send(parseFloat(ratio*100).toFixed(2)+"%");
     );
@@ -43,6 +39,9 @@ exports.tanimoto_coefficient = (req, res) ->
 
 
 exports.hausdorff_distances = (req, res) ->
+  Da = [] #set of all distances from shape a to shape b
+  Pa = [] #set of all points in shape a
+  Pb = [] #set of all points in shape b
   fs.createReadStream('./public/img/Square1.png')
   .pipe(new PNG(
       filterType: 4
