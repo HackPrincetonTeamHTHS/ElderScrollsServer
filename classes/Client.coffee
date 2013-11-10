@@ -14,7 +14,7 @@ define (require, exports, module) ->
       @socket = io.connect()
 
       @socket.on 'newUser', (data) =>
-        @me = new User @socket, data['id'], 'Name'
+        @me = new User @socket, data['id'], 'Anonymous'
         for callback in @callbacks
           callback()
         return

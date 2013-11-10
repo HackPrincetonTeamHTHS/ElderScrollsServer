@@ -27,7 +27,7 @@ class Server
 
     setInterval () =>
       @updateRoomSummary()
-    , 500
+    , 1000
 
   loadLobby: (callback) ->
     lobbyRoom = new Lobby () =>
@@ -72,12 +72,14 @@ class Server
         return
 
       # score the drawing data
-      matchImage = currentRoom.get 'currentImage'
-      matchImageBuffer = new Buffer(matchImage['image'], 'binary')
-      data.replace(/^data:image\/png;base64,/,"")
-      drawingBuffer = new Buffer(data, 'base64')
-      score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
-      user.set 'drawingScore', score
+#      matchImage = currentRoom.get 'currentImage'
+#      matchImageBuffer = new Buffer(matchImage['image'], 'base64')
+#      data.replace(/^data:image\/png;base64,/,"")
+#      drawingBuffer = new Buffer(data, 'base64')
+#      score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
+#      console.log score
+#      user.set 'drawingScore', score
+      user.set 'drawingScore', Math.random()*100
 
   removeUser: (user) ->
     @currentUsers = _.reject @currentUsers, (el) ->
@@ -99,12 +101,17 @@ class Server
 
     for room in @rooms
       settings = room.get 'settings'
+      users = room['users']
+      userScores = []
+      for user in users
+        userScores.push {name: user.get('name'), drawingScore: user.get('drawingScore')}
       summary =
         id: settings['id']
         name: settings['name']
         playerCount: room['users'].length
         runTime: settings['runTime']
         difficulty: settings['difficulty']
+        userScores: userScores
       @roomSummary.push summary
 
     for user in @currentUsers

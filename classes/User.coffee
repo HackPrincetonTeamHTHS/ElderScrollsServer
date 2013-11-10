@@ -7,9 +7,10 @@ define (require, exports, module) ->
   SyncedClass = require './SyncedClass'
 
   class User extends SyncedClass
-    constructor: (@socket, @id, @name) ->
+    constructor: (@socket, @id, name) ->
       super 'User', socket
       @set 'currentRoom', -1, false
+      @set 'name', name
 
     changeRoom: (id) ->
       console.log "Changing room from", @get('currentRoom'), "to", id

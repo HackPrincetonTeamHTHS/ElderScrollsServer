@@ -9,6 +9,7 @@ class ServerRoom extends Room
     setTimeout () -> # TODO: figure out why this delay is necessary
       callback()
     , 1000
+    @roundStats = []
 
   getRandomImage: (callback) ->
     d.BaseImagesModel.find {difficulty: @getSetting('difficulty')}, (err, images) ->
@@ -16,8 +17,8 @@ class ServerRoom extends Room
 
   run: () ->
     @getRandomImage (image) =>
-      @set 'running', true
       @set 'currentImage', image
+      @set 'running', true
       runTime = @getSetting 'runTime'
       setTimeout () =>
         @finish()
@@ -25,6 +26,7 @@ class ServerRoom extends Room
   #      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
 
   finish: () ->
+    @set 'roundStats', @roundStats
     @set 'running', false
     finishTime = @getSetting 'finishTime'
     setTimeout () =>
