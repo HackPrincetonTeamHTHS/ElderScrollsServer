@@ -5,12 +5,11 @@ define (require, exports, module) ->
 
   class ServerRoom extends Room
     constructor: (settings, callback) ->
-      socket = io.connect 'localhost', {port: 3000} #TODO: load port dynamically from server config
-      socket.on 'connect', () =>
-        super socket, settings
-        console.log "ServerRoom", @id, "connected to local socket"
-        @run()
+      super null, settings
+      @run()
+      setTimeout () -> # TODO: figure out why this delay is necessary
         callback()
+      , 1000
 
     run: () ->
       @set 'running', true

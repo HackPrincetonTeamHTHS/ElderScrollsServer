@@ -23,12 +23,12 @@ define (require, exports, module) ->
     addUser: (user) ->
       @users.push(user)
       console.log "Added user", user['id'], "to room", @id
-      user.getSocket().join @getSocketRoomName()
+      @addSocket user.getSocket()
       user.getSocket().emit 'newRoom', {settings: @get 'settings'}
 
     removeUser: (user) ->
       @users = _.filter @users, (elem) ->
         return user['id'] == elem['id']
-      user.getSocket().leave @getSocketRoomName()
+      @removeSocket user.getSocket()
 
   module.exports = Room

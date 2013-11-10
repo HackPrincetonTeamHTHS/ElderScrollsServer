@@ -1,12 +1,25 @@
 define (require, exports, module) ->
+  _ = require 'underscore'
+
   class SyncedClass
-    constructor: (@objectId, @socket, @room = null) ->
+    constructor: (@objectId, socket, @room = null) ->
       @data = {}
       @callbacks = {}
-      @socket.on 'sync', (data) =>
+      @sockets = []
+
+      if socket?
+        @addSocket socket
+
+    addSocket: (socket) ->
+      @sockets.push socket
+      socket.on 'sync', (data) =>
         if data['objectId'] == @objectId
           console.log @objectId, 'receiving sync', data['key'], '=', data['value']
           @set data['key'], data['value'], false
+
+    removeSocket: (socket) ->
+      @sockets = _.filter @sockets, (s) ->
+        console.log socket # TODO: SyncedClass::removeSocket()
 
     set: (key, value, sync = true) ->
 #      console.log "Setting", key, "=>", value
@@ -24,10 +37,8 @@ define (require, exports, module) ->
           objectId: @objectId
           key: key
           value: value
-        if @room?
-          @socket.emit 'broadcast', {room: @room, event: 'sync', data: data}
-        else
-          @socket.emit 'sync', data
+        for socket in @sockets
+          socket.emit 'sync', data
 
     get: (key) ->
       return @data[key]
