@@ -27,7 +27,7 @@ class Server
 
     setInterval () =>
       @updateRoomSummary()
-    , 500
+    , 1000
 
   loadLobby: (callback) ->
     lobbyRoom = new Lobby () =>
@@ -101,12 +101,17 @@ class Server
 
     for room in @rooms
       settings = room.get 'settings'
+      users = room['users']
+      userScores = {}
+      for user in users
+        userScores[user['name']] = user.get('drawingScore')
       summary =
         id: settings['id']
         name: settings['name']
         playerCount: room['users'].length
         runTime: settings['runTime']
         difficulty: settings['difficulty']
+        userScores: userScores
       @roomSummary.push summary
 
     for user in @currentUsers
