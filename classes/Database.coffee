@@ -9,13 +9,14 @@ db = mongoose.connection
 async = require 'async'
 
 roomSettingsSchema = new mongoose.Schema({
-  id: Number,
+  #id: Number,
   name: String,
-  difficulty: Number,
+  difficulty: Number, #1:easy, 2:medium,3:difficult
 #    maxUsers: Number,
 #    password: String,
-  runTime: Number,
-  finishTime: Number,
+  previewTime: {type: Number, default: 3}, #amount of time you get to view the image
+  runTime: {type: Number, default: 20}, #amount of time to draw
+  finishTime: {type: Number, default: 5} #time to sit at finish screen
 #    highScores: [{
 #      id: Number,
 #      score: Number
