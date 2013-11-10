@@ -25,6 +25,7 @@ exports.importAll = (masterCallback) ->
           image = new d.BaseImagesModel()
           image.difficulty = sources[folder]
           image.image = buffer.toString('base64')
+          console.log image.image;
           image.target_points = ImgDiff.identifyPoints(buffer, 3)
           image.save (err) ->
             if err
