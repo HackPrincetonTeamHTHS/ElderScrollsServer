@@ -1,5 +1,7 @@
-if typeof define != 'function'
-  define = require('amdefine')(module)
+if !window?
+  `var define = require('amdefine')(module)`
+else
+  define = window.define
 
 define (require, exports, module) ->
   SyncedClass = require './SyncedClass'
