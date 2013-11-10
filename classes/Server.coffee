@@ -72,17 +72,12 @@ class Server
         return
 
       # score the drawing data
-      # TODO: fix buffers
-#      matchImage = currentRoom.get 'currentImage'
-#      data.replace(/^data:image\/png;base64,/,"")
-#      matchImageBuffer = new Buffer(matchImage['image'])
-#      drawingBuffer = new Buffer(data, 'base64')
-#      score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
-
-      score = Math.random() * 100
-      setTimeout () ->
-        user.set 'drawingScore', score
-      , 100
+      matchImage = currentRoom.get 'currentImage'
+      matchImageBuffer = new Buffer(matchImage['image'], 'binary')
+      data.replace(/^data:image\/png;base64,/,"")
+      drawingBuffer = new Buffer(data, 'base64')
+      score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
+      user.set 'drawingScore', score
 
   removeUser: (user) ->
     @currentUsers = _.reject @currentUsers, (el) ->
