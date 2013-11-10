@@ -73,8 +73,9 @@ class Server
 
       # score the drawing data
       matchImage = currentRoom.get 'currentImage'
-      matchImageBuffer = new Buffer(matchImage['image'], 'binary')
+      matchImageBuffer = new Buffer(matchImage['image'], 'base64')
       data.replace(/^data:image\/png;base64,/,"")
+      console.log(matchImageBuffer).toString('binary');
       drawingBuffer = new Buffer(data, 'base64')
       score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
       user.set 'drawingScore', score
