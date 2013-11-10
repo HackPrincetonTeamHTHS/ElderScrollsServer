@@ -3,6 +3,8 @@ define (require, exports, module) ->
   User = require './User'
   _ = require 'underscore'
   Lobby = require './Lobby'
+  database = require './Database'
+  ImgDiff = require '../libraries/ImgDiff'
 
   class Server
     constructor: (@io) ->
@@ -12,8 +14,11 @@ define (require, exports, module) ->
 
       @roomSummary = []
 
-      @addRoom 3, 1000, 500, "Game A"
-      @addRoom 2, 10, 10, "Game B"
+      @addRoom {id: 42, name: "Test Room", runTime: 1000, finishTime: 1000}
+
+      database.RoomSettingsModel.find (err, rooms) ->
+        for room in rooms
+          @addRoom room
 
       @loadLobby () =>
         @io.on 'connection', (socket) =>
@@ -29,8 +34,8 @@ define (require, exports, module) ->
         console.log "Lobby initialized"
         callback()
 
-    addRoom: (id, runTime, finishTime, name) ->
-      newRoom = new ServerRoom {id: id, runTime: runTime, finishTime: finishTime, name: name}, () =>
+    addRoom: (settings) ->
+      newRoom = new ServerRoom settings, () =>
         @rooms.push newRoom
         console.log 'Added new room with id', id
 
@@ -60,6 +65,8 @@ define (require, exports, module) ->
 
       user.onUpdate 'drawingData', (data) ->
         # score the drawing data
+        matchImage = @getRoomById(user['currentRoom'])
+        score = ImgDiff.tanimoto_coefficient data
         user.set 'drawingScore', Math.random()
 
     removeUser: (user) ->
@@ -67,8 +74,10 @@ define (require, exports, module) ->
         return el.id == user.id
 
     getRoomById: (id) ->
-      return _.find @rooms, (room) ->
-        room['id'] == id
+      room = _.find @rooms, (elem) ->
+        elem['id'] == id
+      # TODO: check if room is valid and exists
+      return room
 
     onUserChangeRoom: (user, fromId, toId) ->
       @getRoomById(fromId).removeUser(user)

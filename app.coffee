@@ -40,6 +40,10 @@ server.listen(app.get('port'), () ->
   console.log("Express server listening on port " + app.get('port'))
 )
 
+process.on 'uncaughtException', (err) ->
+  # handle the error safely
+  console.log(err)
+
 console.log "Initializing database connection"
 requirejs ['./classes/Database'], (database) ->
   database.onReady () ->
