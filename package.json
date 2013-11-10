@@ -1,9 +1,9 @@
 {
   "name": "application-name",
-  "version": "0.0.1",
+  "version": "0.0.1-42",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node app_launch.js"
   },
   "dependencies": {
     "express": "3.0.5",
