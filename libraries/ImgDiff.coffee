@@ -51,7 +51,7 @@ Returns an array of target pixels for chaching purposes
 img must be a buffer
 skip is the number of pixels skipped in x and y for optimization purposes (3 is optimal)
 ###
-exports.identfyPoints = (img,skip) ->
+exports.identifyPoints = (img,skip) ->
   points = []
   reader = new PNGReader(img);
   reader.parse( (err, png) ->
