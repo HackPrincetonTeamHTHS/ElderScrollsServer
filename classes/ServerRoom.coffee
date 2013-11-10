@@ -9,7 +9,6 @@ class ServerRoom extends Room
     setTimeout () -> # TODO: figure out why this delay is necessary
       callback()
     , 1000
-    @roundStats = []
 
   getRandomImage: (callback) ->
     d.BaseImagesModel.find {difficulty: @getSetting('difficulty')}, (err, images) ->
@@ -22,16 +21,22 @@ class ServerRoom extends Room
       runTime = @getSetting 'runTime'
       setTimeout () =>
         @finish()
-      , (runTime + 5000)
+      , (runTime + 5500)
   #      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
 
   finish: () ->
-    @set 'roundStats', @roundStats
+    @set 'roundStats', @getRoundStats()
     @set 'running', false
     finishTime = @getSetting 'finishTime'
     setTimeout () =>
       @run()
-    , finishTime
+    , (finishTime + 500)
 #      console.log 'Room', @id, 'now finishing for', finishTime, 'milliseconds'
+
+  getRoundStats: () ->
+    roundStats = []
+    for user in @users
+      roundStats.push {name: user.get('name'), drawingScore: user.get('drawingScore'), drawingData: user.get('drawingData')}
+    return roundStats
 
 module.exports = ServerRoom
