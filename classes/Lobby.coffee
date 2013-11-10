@@ -1,13 +1,14 @@
-define (require, exports, module) ->
-  ServerRoom = require './ServerRoom'
+ServerRoom = require './ServerRoom'
 
-  class Lobby extends ServerRoom
-    constructor: (callback) ->
-      settings =
-        id: -1
-        name: "Lobby"
-      super settings, callback
+class Lobby extends ServerRoom
+  constructor: (callback) ->
+    settings =
+      id: -1
+      name: "Lobby"
+    super settings, callback
 
-    run: () ->
+  run: () ->
 
-    finish: () ->
+  finish: () ->
+
+module.exports = Lobby
