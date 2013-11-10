@@ -1,7 +1,7 @@
 if process.env.MONGO_URL?
   url = process.env.MONGO_URL
 else
-  url = 'mongodb://localhost/elderscrolls'
+  url = 'mongodb://10.0.0.5/elderscrolls'#'mongodb://localhost/elderscrolls'
 
 define (require, exports, module) ->
   mongoose = require('mongoose')
@@ -22,7 +22,14 @@ define (require, exports, module) ->
 #    }]
   })
 
+  baseImagesSchema = new mongoose.Schema({
+    difficulty: Number,
+    image: String,
+    target_points: Schema.Types.Mixed
+  })
+
   exports.RoomSettingsModel = mongoose.model 'RoomSettings', roomSettingsSchema
+  exports.BaseImagesModel = mongoose.model 'BaseImages', baseImagesSchema
 
   callback = () ->
   exports.onReady = (mcallback) ->
