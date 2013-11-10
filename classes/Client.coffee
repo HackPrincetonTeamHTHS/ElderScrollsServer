@@ -17,6 +17,9 @@ define (require, exports, module) ->
         @room = new Room @socket, data['settings']
         @rebindUpdateCallbacks()
 
+      @socket.on 'roomSummary', (roomSummary) =>
+        console.log roomSummary
+
       @onReady () =>
         @setup()
 

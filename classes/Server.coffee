@@ -10,11 +10,18 @@ define (require, exports, module) ->
       @currentUsers = []
       @currentUserId = 0
 
-      @addRoom 3, 1000, 500
-      @addRoom 2, 10, 10
+      @roomSummary = []
+
+      @addRoom 3, 1000, 500, "Game A"
+      @addRoom 2, 10, 10, "Game B"
+
       @loadLobby () =>
         @io.on 'connection', (socket) =>
           @prepareUser socket
+
+      setInterval () =>
+        @updateRoomSummary()
+      , 500
 
     loadLobby: (callback) ->
       lobbyRoom = new Lobby () =>
@@ -22,8 +29,8 @@ define (require, exports, module) ->
         console.log "Lobby initialized"
         callback()
 
-    addRoom: (id, runTime, finishTime) ->
-      newRoom = new ServerRoom {id: id, runTime: runTime, finishTime: finishTime}, () =>
+    addRoom: (id, runTime, finishTime, name) ->
+      newRoom = new ServerRoom {id: id, runTime: runTime, finishTime: finishTime, name: name}, () =>
         @rooms.push newRoom
         console.log 'Added new room with id', id
 
@@ -66,5 +73,20 @@ define (require, exports, module) ->
     onUserChangeRoom: (user, fromId, toId) ->
       @getRoomById(fromId).removeUser(user)
       @getRoomById(toId).addUser(user)
+
+    updateRoomSummary: () ->
+      @roomSummary = []
+
+      for room in @rooms
+        settings = room.get 'settings'
+        summary =
+          name: settings['name']
+          playerCount: room['users'].length
+          runTime: settings['runTime']
+          difficulty: settings['difficulty']
+        @roomSummary.push summary
+
+      for user in @currentUsers
+        user.socket.emit 'roomSummary', @roomSummary
 
   module.exports = Server
