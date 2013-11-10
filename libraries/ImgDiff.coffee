@@ -8,34 +8,40 @@ Tc=Pab/(Pa+Pb-Pab)
 Compares every third pixel horizontally and vertically for optimization purposes
 imgA and imgB must be buffers!
 ###
-exports.tanimoto_coefficient = (imgA, imgB) ->
+exports.tanimoto_coefficient = (imgA, imgB, callback) ->
   Pa = [] #set of all points in shape a
   Pb = [] #set of all points in shape b
+  ratio = 0
 
   #fs.readFile('./public/img/out.png', (err, buffer) ->
+  PaCount = 0
   reader = new PNGReader(imgA);
   reader.parse( (err, png) ->
     if (err)
       throw err
+    #console.log(png)
     for y in [0..png.getHeight()-1] by 3 #skip ev
       for x in [0..png.getWidth()-1] by 3
         if png.getPixel(x,y)[0] == 0
-
           Pa.push([x,y])
     PaCount = Pa.length
+    console.log "pacount", PaCount
 
     #img = req.body.img.replace(/^data:image\/png;base64,/,"")
     #img = new Buffer(img, 'base64')#.toString('binary')
 
+    PbCount = 0;
     reader = new PNGReader(imgB);
     reader.parse( (err, png) ->
       if (err)
         throw err
+      #console.log png
       for y in [0..png.getHeight()-1] by 3
         for x in [0..png.getWidth()-1] by 3
           if png.getPixel(x,y)[0] == 0
             Pb.push([x,y])
       PbCount = Pb.length
+      console.log "Pb", PbCount
 
       intersection = 0
       for pntA in Pa
@@ -43,7 +49,7 @@ exports.tanimoto_coefficient = (imgA, imgB) ->
           if pntA[0] == pntB[0] && pntA[1] == pntB[1] #compare pixels 1:1
             intersection+=1
       ratio = Math.pow(intersection/(PaCount+PbCount-intersection),.5) #calculate Tanimoto coefficient
-      return parseFloat(ratio*100).toFixed(2)+"%");
+      callback(parseFloat(ratio*100).toFixed(2)+"%"));
   )
 
 ###
