@@ -36,7 +36,7 @@ define (require, exports, module) ->
 
     removeUser: (user) ->
       @users = _.filter @users, (elem) ->
-        return user['id'] == elem['id']
+        return user['id'] != elem['id']
       @removeSocket user.getSocket()
 
   module.exports = Room
