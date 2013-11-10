@@ -24,7 +24,7 @@ exports.importAll = (masterCallback) ->
             throw err
           image = new d.BaseImagesModel()
           image.difficulty = sources[folder]
-          image.image = buffer.toString('binary')
+          image.image = buffer.toString('base64')
           image.target_points = ImgDiff.identifyPoints(buffer, 3)
           image.save (err) ->
             if err
