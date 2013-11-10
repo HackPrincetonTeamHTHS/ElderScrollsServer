@@ -18,7 +18,7 @@ define (require, exports, module) ->
         @rebindUpdateCallbacks()
 
       @socket.on 'roomSummary', (roomSummary) =>
-        console.log roomSummary
+#        console.log roomSummary
 
       @onReady () =>
         @setup()
