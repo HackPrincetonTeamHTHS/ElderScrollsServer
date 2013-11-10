@@ -21,7 +21,7 @@ class ServerRoom extends Room
       runTime = @getSetting 'runTime'
       setTimeout () =>
         @finish()
-      , runTime
+      , (runTime + 5000)
   #      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
 
   finish: () ->
