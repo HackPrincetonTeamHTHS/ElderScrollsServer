@@ -13,7 +13,7 @@ class Server
 
     @roomSummary = []
 
-    @addRoom {id: 42, name: "Test Room", runTime: 1000, finishTime: 1000}
+    @addRoom {id: 42, name: "Test Room", runTime: 1000, finishTime: 1000, difficulty: 2}
 
     database.RoomSettingsModel.find (err, rooms) ->
       for room in rooms
@@ -62,11 +62,25 @@ class Server
     user.onUpdate 'currentRoom', (toId) =>
       @onUserChangeRoom user, user.get('previousRoom'), toId
 
-    user.onUpdate 'drawingData', (data) ->
+    user.onUpdate 'drawingData', (data) =>
+      console.log "Drawing Data"
+
+      currentRoom = @getRoomById(user.get 'currentRoom')
+      if currentRoom['id'] == -1
+        return
+
       # score the drawing data
-      matchImage = @getRoomById(user['currentRoom'])
-      score = ImgDiff.tanimoto_coefficient data
-      user.set 'drawingScore', Math.random()
+      # TODO: fix buffers
+#      matchImage = currentRoom.get 'currentImage'
+#      data.replace(/^data:image\/png;base64,/,"")
+#      matchImageBuffer = new Buffer(matchImage['image'])
+#      drawingBuffer = new Buffer(data, 'base64')
+#      score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
+
+      score = Math.random() * 100
+      setTimeout () ->
+        user.set 'drawingScore', score
+      , 100
 
   removeUser: (user) ->
     @currentUsers = _.reject @currentUsers, (el) ->
