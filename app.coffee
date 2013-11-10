@@ -29,7 +29,8 @@ app.configure 'production', () ->
     # handle the error safely
     console.log(err)
 
-#app.get('/hdistances',ImgDiff.hausdorff_distances)
+ImgDiff = require('./libraries/ImgDiff')
+app.get('/testimg',ImgDiff.test)
 #app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
 server = http.createServer(app)
