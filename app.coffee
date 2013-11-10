@@ -9,10 +9,6 @@ express = require('express')
 http = require('http')
 path = require('path')
 
-requirejs = require 'requirejs'
-requirejs.config { nodeRequire: require }
-ImgDiff = require('./libraries/ImgDiff')
-
 app = express();
 
 app.configure(() ->
@@ -25,9 +21,13 @@ app.configure(() ->
   app.use(express.static(path.join(__dirname, 'client')));
 )
 
-app.configure('development', () ->
-  app.use(express.errorHandler());
-)
+app.configure 'development', () ->
+  app.use express.errorHandler()
+
+app.configure 'production', () ->
+  process.on 'uncaughtException', (err) ->
+    # handle the error safely
+    console.log(err)
 
 #app.get('/hdistances',ImgDiff.hausdorff_distances)
 #app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
@@ -40,15 +40,16 @@ server.listen(app.get('port'), () ->
   console.log("Express server listening on port " + app.get('port'))
 )
 
-process.on 'uncaughtException', (err) ->
-  # handle the error safely
-  console.log(err)
-
 console.log "Initializing database connection"
-requirejs ['./classes/Database'], (database) ->
-  database.onReady () ->
-    console.log "Ready"
-    console.log "Starting up real time server"
 
-    requirejs ['./classes/Server'], (Server) ->
-      s = new Server(io)
+database = require './classes/Database'
+
+database.onReady () ->
+  console.log "Ready"
+  console.log "Starting up real time server"
+
+  Server = require './classes/Server'
+  s = new Server(io)
+
+  importRoute = require './import'
+  app.get '/import', importRoute

@@ -1,3 +1,6 @@
+if typeof define != 'function'
+  define = require('amdefine')(module)
+
 define (require, exports, module) ->
   User = require './User'
   Room = require './Room'

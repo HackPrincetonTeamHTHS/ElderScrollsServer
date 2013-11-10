@@ -1,3 +1,6 @@
+if typeof define != 'function'
+  define = require('amdefine')(module)
+
 if process.env.MONGO_URL?
   url = process.env.MONGO_URL
 else
@@ -25,7 +28,7 @@ define (require, exports, module) ->
   baseImagesSchema = new mongoose.Schema({
     difficulty: Number,
     image: String,
-    target_points: Schema.Types.Mixed
+    target_points: mongoose.Schema.Types.Mixed
   })
 
   exports.RoomSettingsModel = mongoose.model 'RoomSettings', roomSettingsSchema
