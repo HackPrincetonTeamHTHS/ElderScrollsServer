@@ -29,8 +29,8 @@ app.configure('development', () ->
   app.use(express.errorHandler());
 )
 
-app.get('/hdistances',ImgDiff.hausdorff_distances)
-app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
+#app.get('/hdistances',ImgDiff.hausdorff_distances)
+#app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
 server = http.createServer(app)
 io = require('socket.io').listen(server)
