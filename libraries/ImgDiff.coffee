@@ -12,16 +12,14 @@ tanimoto_coefficient = (imgA, imgB) ->
   Pa = [] #set of all points in shape a
   Pb = [] #set of all points in shape b
 
-
   #fs.readFile('./public/img/out.png', (err, buffer) ->
-  reader = new PNGReader(buffer);
+  reader = new PNGReader(imgA);
   reader.parse( (err, png) ->
     if (err)
       throw err
     for y in [0..png.getHeight()-1] by 3 #skip ev
       for x in [0..png.getWidth()-1] by 3
         if png.getPixel(x,y)[0] == 0
-
           Pa.push([x,y])
     PaCount = Pa.length
 
@@ -53,6 +51,25 @@ tanimoto_coefficient = (imgA, imgB) ->
       ratio = Math.pow(intersection/(PaCount+PbCount-intersection),.5) #calculate Tanimoto coefficient
       return parseFloat(ratio*100).toFixed(2)+"%");
 
+  )
+
+
+###
+Returns an array of target pixels for chaching purposes
+img must be a buffer
+skip is the number of pixels skipped in x and y for optimization purposes (3 is optimal)
+###
+identfyPoints = (img,skip) ->
+  points = []
+  reader = new PNGReader(img);
+  reader.parse( (err, png) ->
+    if (err)
+      throw err
+    for y in [0..png.getHeight()-1] by skip #skip ev
+      for x in [0..png.getWidth()-1] by skip
+        if png.getPixel(x,y)[0] == 0
+          points.push([x,y])
+    return points
   )
 
 ###
