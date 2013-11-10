@@ -35,7 +35,7 @@ exports.tanimoto_coefficient = (imgA, imgB, callback) ->
     reader.parse( (err, png) ->
       if (err)
         throw err
-      #console.log png
+      console.log png
       for y in [0..png.getHeight()-1] by 3
         for x in [0..png.getWidth()-1] by 3
           if png.getPixel(x,y)[0] == 0

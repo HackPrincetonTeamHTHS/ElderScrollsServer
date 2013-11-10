@@ -18,6 +18,7 @@ app.configure(() ->
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use('/classes', express.static(path.join(__dirname, 'classes')));
+  app.use(require('less-middleware')({ src: __dirname + '/client' }));
   app.use(express.static(path.join(__dirname, 'client')));
 )
 
