@@ -20,7 +20,7 @@ define (require, exports, module) ->
 
     loadSettings: (settings) ->
       @id = settings['id']
-      @set 'settings', settings
+      @set 'settings', settings, false
 
     getSetting: (key) ->
       return @get('settings')[key]

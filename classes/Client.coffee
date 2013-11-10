@@ -14,11 +14,14 @@ define (require, exports, module) ->
       @socket = io.connect()
 
       @socket.on 'newUser', (data) =>
-        @me = new User(@socket, data['id'], 'Name')
+        @me = new User @socket, data['id'], 'Name'
         for callback in @callbacks
           callback()
+        return
 
       @socket.on 'newRoom', (data) =>
+        if @room?
+          @room.close()
         @room = new Room @socket, data['settings']
         @rebindUpdateCallbacks()
 
@@ -33,7 +36,6 @@ define (require, exports, module) ->
 
     setup: () ->
       console.log 'Connected'
-      console.log @me
 
     onUpdate: (key, callback) ->
       if !@updateCallbacks[key]?

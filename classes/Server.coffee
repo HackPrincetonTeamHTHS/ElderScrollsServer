@@ -14,6 +14,8 @@ class Server
     @roomSummary = []
 
     @addRoom {id: 42, name: "Test Room", runTime: 1000, finishTime: 1000, difficulty: 2}
+    @addRoom {id: 11, name: "Test Room", runTime: 5000, finishTime: 1000, difficulty: 1}
+    @addRoom {id: 15, name: "Test Room", runTime: 3000, finishTime: 1000, difficulty: 3}
 
     database.RoomSettingsModel.find (err, rooms) ->
       for room in rooms
@@ -48,7 +50,7 @@ class Server
   addUser: (socket, user) ->
     @currentUsers.push user
     @attachListeners socket, user
-    @getRoomById(-1).addUser(user)
+#    @getRoomById(-1).addUser(user)
     console.log "User #", user['id'], "connected"
 
   attachListeners: (socket, user) ->

@@ -1,5 +1,4 @@
 Room = require './Room'
-io = require('socket.io-client')
 d = require './Database'
 _ = require 'underscore'
 

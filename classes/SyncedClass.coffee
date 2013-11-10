@@ -11,6 +11,7 @@ define (require, exports, module) ->
       @data = {}
       @callbacks = {}
       @sockets = []
+      @closed = false
 
       if socket?
         @addSocket socket
@@ -18,13 +19,19 @@ define (require, exports, module) ->
     addSocket: (socket) ->
       @sockets.push socket
       socket.on 'sync', (data) =>
-        if data['objectId'] == @objectId
-          console.log @objectId, 'receiving sync', data['key'], '=', data['value']
-          @set data['key'], data['value'], false
+        if !@closed
+          if data['objectId'] == @objectId
+            console.log @objectId, 'receiving sync', data['key'], '=', data['value']
+            @set data['key'], data['value'], false
 
     removeSocket: (socket) ->
+      # TODO: unbind socket listeners on removeSocket()
       @sockets = _.filter @sockets, (s) ->
-        console.log socket # TODO: SyncedClass::removeSocket()
+        socket.id == s.id
+
+    close: () ->
+      # TODO: unbind all socket listeners on close()
+      @closed = true
 
     set: (key, value, sync = true) ->
 #      console.log "Setting", key, "=>", value
@@ -36,7 +43,7 @@ define (require, exports, module) ->
         for callback in @callbacks['*']
           callback value
       if sync
-        if key != 'running'
+        if key not in ['running', 'currentImage']
           console.log @objectId, 'sending sync', key, '=', value
         data =
           objectId: @objectId
