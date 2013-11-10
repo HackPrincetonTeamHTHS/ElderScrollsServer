@@ -13,9 +13,9 @@ class Server
 
     @roomSummary = []
 
-    @addRoom {id: 42, name: "Test Room", runTime: 1000, finishTime: 1000, difficulty: 2}
-    @addRoom {id: 11, name: "Test Room", runTime: 5000, finishTime: 1000, difficulty: 1}
-    @addRoom {id: 15, name: "Test Room", runTime: 3000, finishTime: 1000, difficulty: 3}
+    @addRoom {id: 42, name: "Test Room 42", runTime: 1000, finishTime: 1000, difficulty: 2}
+    @addRoom {id: 11, name: "Test Room 11", runTime: 5000, finishTime: 1000, difficulty: 1}
+    @addRoom {id: 15, name: "Test Room 15", runTime: 3000, finishTime: 1000, difficulty: 3}
 
     database.RoomSettingsModel.find (err, rooms) ->
       for room in rooms
@@ -78,6 +78,7 @@ class Server
       console.log(matchImageBuffer).toString('binary');
       drawingBuffer = new Buffer(data, 'base64')
       score = ImgDiff.tanimoto_coefficient matchImageBuffer, drawingBuffer
+      console.log score
       user.set 'drawingScore', score
 
   removeUser: (user) ->
@@ -85,6 +86,7 @@ class Server
       return el.id == user.id
 
   getRoomById: (id) ->
+    id = parseInt(id)
     room = _.find @rooms, (elem) ->
       elem['id'] == id
     # TODO: check if room is valid and exists
@@ -100,6 +102,7 @@ class Server
     for room in @rooms
       settings = room.get 'settings'
       summary =
+        id: settings['id']
         name: settings['name']
         playerCount: room['users'].length
         runTime: settings['runTime']

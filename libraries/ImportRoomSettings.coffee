@@ -1,4 +1,4 @@
-d = require('./classes/Database')
+d = require('../classes/Database')
 
 createRooms = () ->
   room = new d.RoomSettingsModel()

@@ -16,12 +16,12 @@ class ServerRoom extends Room
 
   run: () ->
     @getRandomImage (image) =>
-      @set 'running', true
       @set 'currentImage', image
+      @set 'running', true
       runTime = @getSetting 'runTime'
       setTimeout () =>
         @finish()
-      , runTime
+      , (runTime + 5000)
   #      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
 
   finish: () ->
