@@ -13,8 +13,8 @@ exports.tanimoto_coefficient = (req, res) ->
     reader.parse( (err, png) ->
       if (err)
         throw err
-      for y in [0..png.getHeight()-1]
-        for x in [0..png.getWidth()-1]
+      for y in [0..png.getHeight()-1] by 3
+        for x in [0..png.getWidth()-1] by 3
           if png.getPixel(x,y)[0] == 0
 
             Pa.push([x,y])
@@ -35,8 +35,8 @@ exports.tanimoto_coefficient = (req, res) ->
       reader.parse( (err, png) ->
         if (err)
           throw err
-        for y in [0..png.getHeight()-1]
-          for x in [0..png.getWidth()-1]
+        for y in [0..png.getHeight()-1] by 3
+          for x in [0..png.getWidth()-1] by 3
             if png.getPixel(x,y)[0] == 0
               Pb.push([x,y])
         PbCount = Pb.length
