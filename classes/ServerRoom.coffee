@@ -8,6 +8,7 @@ define (require, exports, module) ->
       socket = io.connect 'localhost', {port: 3000} #TODO: load port dynamically from server config
       socket.on 'connect', () =>
         super socket, settings
+        console.log "ServerRoom", @id, "connected to local socket"
         @run()
         callback()
 
@@ -17,7 +18,7 @@ define (require, exports, module) ->
       setTimeout () =>
         @finish()
       , runTime
-      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
+#      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
 
     finish: () ->
       @set 'running', false
@@ -25,6 +26,6 @@ define (require, exports, module) ->
       setTimeout () =>
         @run()
       , finishTime
-      console.log 'Room', @id, 'now finishing for', finishTime, 'milliseconds'
+#      console.log 'Room', @id, 'now finishing for', finishTime, 'milliseconds'
 
   return ServerRoom
