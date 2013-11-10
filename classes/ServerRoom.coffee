@@ -1,6 +1,7 @@
 Room = require './Room'
 io = require('socket.io-client')
-database = require './Database'
+d = require './Database'
+_ = require 'underscore'
 
 class ServerRoom extends Room
   constructor: (settings, callback) ->
@@ -10,17 +11,23 @@ class ServerRoom extends Room
       callback()
     , 1000
 
+  getRandomImage: (callback) ->
+    d.BaseImagesModel.find {difficulty: @getSetting('difficulty')}, (err, images) ->
+      callback _.sample(images)
+
   run: () ->
-    @set 'running', true
-    runTime = @get('settings')['runTime']
-    setTimeout () =>
-      @finish()
-    , runTime
-#      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
+    @getRandomImage (image) =>
+      @set 'running', true
+      @set 'currentImage', image
+      runTime = @getSetting 'runTime'
+      setTimeout () =>
+        @finish()
+      , runTime
+  #      console.log 'Room', @id, 'now running for', runTime, 'milliseconds'
 
   finish: () ->
     @set 'running', false
-    finishTime = @get('settings')['finishTime']
+    finishTime = @getSetting 'finishTime'
     setTimeout () =>
       @run()
     , finishTime

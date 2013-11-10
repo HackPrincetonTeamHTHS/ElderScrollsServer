@@ -20,6 +20,9 @@ define (require, exports, module) ->
       @id = settings['id']
       @set 'settings', settings
 
+    getSetting: (key) ->
+      return @get('settings')[key]
+
     getSocketRoomName: () ->
       return 'room' + @id
 
