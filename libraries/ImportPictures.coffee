@@ -9,9 +9,7 @@ importAll = () ->
       files.forEach( (file) ->
         fs.readFile(file, (err, buffer) ->
 
-          BaseImages = mongoose.model('BaseImages', BaseImagesSchema);
-
-          image = new BaseImages()
+          image = new BaseImagesModel()
           image.difficulty = 1
           image.image = buffer.toString('binary')
           image.target_points = ImgDiff.identifyPoints(buffer,3)
