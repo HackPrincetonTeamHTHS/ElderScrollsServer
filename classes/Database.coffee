@@ -1,7 +1,7 @@
 if process.env.MONGO_URL?
   url = process.env.MONGO_URL
 else
-  url = 'mongodb://10.0.0.5/elderscrolls'#'mongodb://localhost/elderscrolls'
+  url = 'mongodb://localhost/elderscrolls'
 
 define (require, exports, module) ->
   mongoose = require('mongoose')
