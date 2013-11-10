@@ -21,16 +21,14 @@ define (require, exports, module) ->
       socket.on 'sync', (data) =>
         if !@closed
           if data['objectId'] == @objectId
-            console.log @objectId, 'receiving sync', data['key'], '=', data['value']
+#            console.log @objectId, 'receiving sync', data['key'], '=', data['value']
             @set data['key'], data['value'], false
 
     removeSocket: (socket) ->
-      # TODO: unbind socket listeners on removeSocket()
       @sockets = _.filter @sockets, (s) ->
-        socket.id == s.id
+        socket.id != s.id
 
     close: () ->
-      # TODO: unbind all socket listeners on close()
       @closed = true
 
     set: (key, value, sync = true) ->
@@ -43,8 +41,8 @@ define (require, exports, module) ->
         for callback in @callbacks['*']
           callback value
       if sync
-        if key not in ['running', 'currentImage']
-          console.log @objectId, 'sending sync', key, '=', value
+#        if key not in ['running', 'currentImage']
+#          console.log @objectId, 'sending sync', key, '=', value
         data =
           objectId: @objectId
           key: key
