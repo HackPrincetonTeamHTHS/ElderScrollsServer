@@ -102,9 +102,9 @@ class Server
     for room in @rooms
       settings = room.get 'settings'
       users = room['users']
-      userScores = {}
+      userScores = []
       for user in users
-        userScores[user['name']] = user.get('drawingScore')
+        userScores.push {name: user.get('name'), drawingScore: user.get('drawingScore')}
       summary =
         id: settings['id']
         name: settings['name']
