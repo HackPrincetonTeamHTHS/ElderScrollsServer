@@ -19,7 +19,7 @@ app.configure(() ->
   app.use(express.methodOverride());
   app.use(app.router);
   app.use('/classes', express.static(path.join(__dirname, 'classes')));
-  app.use(require('less-middleware')({ src: __dirname + '/client' }));
+  app.use(require('less-middleware')({src: __dirname + '/client',compress: true}));
   app.use(express.static(path.join(__dirname, 'client')));
 )
 
@@ -31,8 +31,8 @@ app.configure 'production', () ->
     # handle the error safely
     console.log(err)
 
-ImgDiff = require('./libraries/ImgDiff')
-app.get('/testimg',ImgDiff.test)
+#ImgDiff = require('./libraries/ImgDiff')
+#app.get('/testimg',ImgDiff.test)
 #app.post('/tcoeff',ImgDiff.tanimoto_coefficient)
 
 server = http.createServer(app)
