@@ -14,8 +14,8 @@ class Server
     @roomSummary = []
 
     @addRoom {id: 42, name: "Test Room 42", runTime: 10000, finishTime: 10000, difficulty: 2}
-#    @addRoom {id: 11, name: "Test Room 11", runTime: 5000, finishTime: 1000, difficulty: 1}
-#    @addRoom {id: 15, name: "Test Room 15", runTime: 3000, finishTime: 1000, difficulty: 3}
+    @addRoom {id: 11, name: "Test Room 11", runTime: 5000, finishTime: 1000, difficulty: 1}
+    @addRoom {id: 15, name: "Test Room 15", runTime: 3000, finishTime: 1000, difficulty: 3}
 
     database.RoomSettingsModel.find (err, rooms) ->
       for room in rooms
@@ -27,7 +27,7 @@ class Server
 
     setInterval () =>
       @updateRoomSummary()
-    , 500
+    , 1000
 
   loadLobby: (callback) ->
     lobbyRoom = new Lobby () =>
@@ -65,7 +65,7 @@ class Server
       @onUserChangeRoom user, user.get('previousRoom'), toId
 
     user.onUpdate 'drawingData', (data) =>
-      console.log "Drawing Data"
+#      console.log "Drawing Data"
 
       currentRoom = @getRoomById(user.get 'currentRoom')
       if currentRoom['id'] == -1
@@ -82,8 +82,9 @@ class Server
         user.set 'drawingScore', score
 
   removeUser: (user) ->
+    @getRoomById(user.get('currentRoom')).removeUser(user)
     @currentUsers = _.reject @currentUsers, (el) ->
-      return el.id != user.id
+      return el.id == user.id
 
   getRoomById: (id) ->
     id = parseInt(id)
@@ -101,13 +102,17 @@ class Server
 
     for room in @rooms
       settings = room.get 'settings'
-
+      users = room['users']
+      userScores = []
+      for user in users
+        userScores.push {name: user.get('name'), drawingScore: user.get('drawingScore')}
       summary =
         id: settings['id']
         name: settings['name']
         playerCount: room['users'].length
         runTime: settings['runTime']
         difficulty: settings['difficulty']
+        userScores: userScores
       @roomSummary.push summary
 
     for user in @currentUsers
