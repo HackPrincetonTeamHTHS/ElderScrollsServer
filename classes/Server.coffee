@@ -83,7 +83,7 @@ class Server
 
   removeUser: (user) ->
     @currentUsers = _.reject @currentUsers, (el) ->
-      return el.id == user.id
+      return el.id != user.id
 
   getRoomById: (id) ->
     id = parseInt(id)
@@ -101,6 +101,7 @@ class Server
 
     for room in @rooms
       settings = room.get 'settings'
+
       summary =
         id: settings['id']
         name: settings['name']
