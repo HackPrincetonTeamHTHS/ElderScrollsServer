@@ -46,9 +46,11 @@ exports.tanimoto_coefficient = (imgA, imgB, callback) ->
       intersection = 0
       for pntA in Pa
         for pntB in Pb
-          if Math.abs(pntA[0]-pntB[0])<=3 && Math.abs(pntA[1]-pntB[1]<=3) #pntA[0] == pntB[0] && pntA[1] == pntB[1] #compare pixels 1:1
+          if Math.abs(pntA[0]-pntB[0])<=3 && Math.abs(pntA[1]-pntB[1])<=3 #pntA[0] == pntB[0] && pntA[1] == pntB[1] #compare pixels 1:1
             intersection+=1
-      ratio = Math.pow(intersection/(PaCount+PbCount-intersection),.5) #calculate Tanimoto coefficient
+            break
+      ratio = Math.pow(2*intersection/((PaCount+2*PbCount)-intersection),.5) #calculate Tanimoto coefficient
+      #console.log PaCount, PbCount, intersection
       callback(parseFloat(ratio*100).toFixed(2)+"%"));
   )
 

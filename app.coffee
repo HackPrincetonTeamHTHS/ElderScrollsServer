@@ -11,22 +11,21 @@ path = require('path')
 
 app = express();
 
-app.configure(() ->
-  app.set('port', port);
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use('/classes', express.static(path.join(__dirname, 'classes')));
-  app.use(require('less-middleware')({src: __dirname + '/client',compress: true}));
-  app.use(express.static(path.join(__dirname, 'client')));
-)
+app.set('port', port);
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(app.router);
+app.use(require('less-middleware')({src: __dirname + '/client',compress: true}));
+app.use(express.static(path.join(__dirname, 'client')));
+app.use('/classes', express.static(path.join(__dirname, 'classes')));
 
-app.configure 'development', () ->
+
+if ('development' == app.get('env'))
   app.use express.errorHandler()
 
-app.configure 'production', () ->
+if ('production' == app.get('env'))
   process.on 'uncaughtException', (err) ->
     # handle the error safely
     console.log(err)
