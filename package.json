@@ -1,6 +1,6 @@
 {
   "name": "QuickDraw",
-  "version": "0.0.1-53",
+  "version": "0.0.1-66",
   "private": true,
   "scripts": {
     "start": "coffee app.coffee"
@@ -17,7 +17,8 @@
     "underscore": "~1.5.2",
     "socket.io-client": "~0.9.16",
     "png.js": "0.1.1",
-    "amdefine": "~0.1.0"
+    "amdefine": "~0.1.0",
+    "connect-coffee-script": "0.1.6"
   },
   "subdomain": "HackPrincetonTeamHTHS",
   "engines": {
