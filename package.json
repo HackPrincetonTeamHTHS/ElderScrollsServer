@@ -1,6 +1,15 @@
 {
   "name": "QuickDraw",
   "version": "0.0.1-66",
+  "description": "Compete with your friends to see who can most quickly and accurately replicate a drawing.",
+  "contributors": [
+    {"name": "Austin Eng","email": "aeng@ctemc.org"},
+    {"name": "Vincent Chen","email": "vincentchen96@gmail.com"},
+    {"name": "Matthew Hsu","email": "gears88@gmail.com"},
+    {"name": "Zachary Liu","email": "liu.zachary@gmail.com"},
+    {"name": "Andrew Millman","email": "amillman@ctemc.org"},
+    {"name": "Yash Patel","email": "ypatel@cetmc.org"}
+  ],
   "private": true,
   "scripts": {
     "start": "coffee app.coffee"

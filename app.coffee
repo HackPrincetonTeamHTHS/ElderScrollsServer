@@ -5,8 +5,6 @@ Module dependencies.
 port = process.env.PORT || 3000
 
 require 'coffee-script'
-coffeescript = require('connect-coffee-script');
-lessmiddleware = require('less-middleware');
 express = require('express')
 http = require('http')
 path = require('path')
@@ -19,8 +17,8 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(lessmiddleware({src: __dirname+'/client',compress:true,debug:true,force:true}));
-app.use(coffeescript({src: __dirname,bare: true}));
+app.use(require('less-middleware')({src: __dirname+'/client',compress:true}));
+app.use(require('connect-coffee-script')({src: __dirname,bare: true}));
 app.use('/',express.static(path.join(__dirname, 'client')));
 app.use('/classes', express.static(path.join(__dirname, 'classes')));
 
@@ -30,6 +28,7 @@ if ('development' == app.get('env'))
   app.use express.errorHandler()
 
 if ('production' == app.get('env'))
+  console.log "Root directory at", __dirname
   process.on 'uncaughtException', (err) ->
     # handle the error safely
     console.log(err)
@@ -52,7 +51,6 @@ database = require './classes/Database'
 
 database.onReady () ->
   console.log "Ready"
-  console.log "Root directory at", __dirname
   console.log "Starting up real time server"
 
   Server = require './classes/Server'
@@ -60,3 +58,9 @@ database.onReady () ->
 
   importRoute = require './import'
   app.get '/import', importRoute
+
+  console.log "Importing images"
+  ImportPictures = require './libraries/ImportPictures'
+  database.empty () -> #TODO change this when save data is implemented
+  ImportPictures.importAll () ->
+    console.log "Images successfully imported."

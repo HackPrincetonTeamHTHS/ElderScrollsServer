@@ -13,9 +13,9 @@ class Server
 
     @roomSummary = []
 
-    @addRoom {id: 42, name: "Test Room 42", runTime: 10000, finishTime: 10000, difficulty: 2}
-    @addRoom {id: 11, name: "Test Room 11", runTime: 5000, finishTime: 1000, difficulty: 1}
-    @addRoom {id: 15, name: "Test Room 15", runTime: 15000, finishTime: 1000, difficulty: 3}
+    @addRoom {id: 42, name: "Kinda Hard", runTime: 10000, finishTime: 10000, difficulty: 2}
+    @addRoom {id: 11, name: "Easy Peasy", runTime: 5000, finishTime: 1000, difficulty: 1}
+    @addRoom {id: 15, name: "Not an Inkling", runTime: 15000, finishTime: 1000, difficulty: 3}
 
     database.RoomSettingsModel.find (err, rooms) ->
       for room in rooms

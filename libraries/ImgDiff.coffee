@@ -25,7 +25,7 @@ exports.tanimoto_coefficient = (imgA, imgB, callback) ->
         if png.getPixel(x,y)[0] == 0
           Pa.push([x,y])
     PaCount = Pa.length
-#    console.log "pacount", PaCount
+    #console.log "pacount", PaCount
 
     #img = req.body.img.replace(/^data:image\/png;base64,/,"")
     #img = new Buffer(img, 'base64')#.toString('binary')
@@ -41,7 +41,7 @@ exports.tanimoto_coefficient = (imgA, imgB, callback) ->
           if png.getPixel(x,y)[0] == 0
             Pb.push([x,y])
       PbCount = Pb.length
-#      console.log "Pb", PbCount
+      #console.log "Pb", PbCount
 
       intersection = 0
       for pntA in Pa
