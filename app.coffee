@@ -17,8 +17,8 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(require('less-middleware')({src: __dirname+'/client',compress:true}));
-app.use(require('connect-coffee-script')({src: __dirname,bare: true}));
+app.use(require('less-middleware')(path.join(__dirname, 'client')));
+app.use(require('connect-coffee-script')({src: path.join(__dirname, 'client'),bare: true}));
 app.use('/',express.static(path.join(__dirname, 'client')));
 app.use('/classes', express.static(path.join(__dirname, 'classes')));
 
