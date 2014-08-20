@@ -58,9 +58,3 @@ database.onReady () ->
 
   importRoute = require './import'
   app.get '/import', importRoute
-
-  console.log "Importing images"
-  ImportPictures = require './libraries/ImportPictures'
-  database.empty () -> #TODO change this when save data is implemented
-  ImportPictures.importAll () ->
-    console.log "Images successfully imported."
