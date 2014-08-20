@@ -18,7 +18,8 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(require('less-middleware')(path.join(__dirname, 'client')));
-app.use(require('connect-coffee-script')({src: path.join(__dirname, 'client'),bare: true}));
+app.use(require('coffee-middleware')({src: __dirname}));
+app.use(require('coffee-middleware')({src: path.join(__dirname, 'client')}));
 app.use('/',express.static(path.join(__dirname, 'client')));
 app.use('/classes', express.static(path.join(__dirname, 'classes')));
 
